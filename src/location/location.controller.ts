@@ -24,7 +24,7 @@ export class LocationController {
     return this.locationService.create(createLocationDto);
   }
 
-  @Get()
+  @Get("all")
   @Auth(ValidRoles.admin)
   findAll() {
     return this.locationService.findAll();

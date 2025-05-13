@@ -9,5 +9,6 @@ import { AuthModule } from "src/user/auth.module";
   controllers: [LocationController],
   providers: [LocationService],
   imports: [TypeOrmModule.forFeature([Location]), AuthModule],
+  exports: [LocationService],
 })
 export class LocationModule {}

@@ -19,14 +19,20 @@ export class Turn {
     type: "enum",
     enum: ["waiting", "called", "attended", "skipped", "cancelled"],
     default: "waiting",
+    nullable: true,
   })
   status: "waiting" | "called" | "attended" | "skipped" | "cancelled";
 
-  @Column({ type: "enum", enum: ["normal", "priority"], default: "normal" })
+  @Column({
+    type: "enum",
+    enum: ["normal", "priority"],
+    default: "normal",
+    nullable: true,
+  })
   priorityLevel: "normal" | "priority";
 
-  @Column()
-  numeroTurno: number;
+  @Column({ default: 1, unique: true })
+  turnNumber: number;
 
   @CreateDateColumn()
   createdAt: Date;
