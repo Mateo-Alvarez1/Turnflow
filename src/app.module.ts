@@ -2,9 +2,10 @@ import { Module } from "@nestjs/common";
 import { AuthModule } from "./user/auth.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
-import { TurnModule } from './turn/turn.module';
-import { LocationModule } from './location/location.module';
-import { TurnHistoryModule } from './turn-history/turn-history.module';
+import { TurnModule } from "./turn/turn.module";
+import { LocationModule } from "./location/location.module";
+import { TurnHistoryModule } from "./turn-history/turn-history.module";
+import { EventsWsModule } from './events-ws/events-ws.module';
 @Module({
   imports: [
     AuthModule,
@@ -22,6 +23,7 @@ import { TurnHistoryModule } from './turn-history/turn-history.module';
     TurnModule,
     LocationModule,
     TurnHistoryModule,
+    EventsWsModule,
   ],
   controllers: [],
   providers: [],
