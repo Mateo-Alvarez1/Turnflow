@@ -10,14 +10,27 @@ import {
 import { TurnService } from "./turn.service";
 import { CreateTurnDto } from "./dto/create-turn.dto";
 import { UpdateTurnDto } from "./dto/update-turn.dto";
+import { CreateTurnHistoryDto } from "src/turn-history/dto/create-turn-history.dto";
+import { GetUser } from "src/user/decorators/get-user.decorator";
+import { User } from "src/user/entities/user.entity";
+import { Auth } from "src/user/decorators/auth.decorator";
+import { ValidRoles } from "src/user/interfaces/valid-roles";
 
 @Controller("")
 export class TurnController {
   constructor(private readonly turnService: TurnService) {}
 
   @Post()
-  create(@Body() createTurnDto: CreateTurnDto) {
-    return this.turnService.create(createTurnDto);
+  @Auth(ValidRoles.admin)
+  create(
+    @Body()
+    body: {
+      createTurnDto: CreateTurnDto;
+      createTurnHistoryDto: CreateTurnHistoryDto;
+    },
+    @GetUser() user: User
+  ) {
+    return this.turnService.create(user, body);
   }
 
   @Get()
@@ -31,11 +44,13 @@ export class TurnController {
   }
 
   @Patch(":id")
+  @Auth(ValidRoles.admin)
   update(@Param("id") id: string, @Body() updateTurnDto: UpdateTurnDto) {
     return this.turnService.update(id, updateTurnDto);
   }
 
   @Delete(":id")
+  @Auth(ValidRoles.admin)
   remove(@Param("id") id: string) {
     return this.turnService.remove(id);
   }

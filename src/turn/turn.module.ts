@@ -7,10 +7,11 @@ import { AuthModule } from "src/user/auth.module";
 import { LocationModule } from "src/location/location.module";
 import { TurnHistory } from "src/turn-history/entities/turn-history.entity";
 import { TurnHistoryModule } from "src/turn-history/turn-history.module";
+import { TurnHistoryService } from "src/turn-history/turn-history.service";
 
 @Module({
   controllers: [TurnController],
-  providers: [TurnService],
+  providers: [TurnService, TurnHistoryService],
   imports: [
     TypeOrmModule.forFeature([Turn]),
     AuthModule,

@@ -13,28 +13,29 @@ import { User } from "src/user/entities/user.entity";
 import { LocationService } from "src/location/location.service";
 import { TurnHistory } from "src/turn-history/entities/turn-history.entity";
 import { validate as IsUUID } from "uuid";
+import { TurnHistoryService } from "src/turn-history/turn-history.service";
+import { CreateTurnHistoryDto } from "src/turn-history/dto/create-turn-history.dto";
 
 @Injectable()
 export class TurnService {
   constructor(
     @InjectRepository(Turn)
     private readonly turnRepository: Repository<Turn>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly locationService: LocationService,
     @InjectRepository(TurnHistory)
-    private readonly turnHistoryRepository: Repository<TurnHistory>
+    private readonly turnHistoryRepository: Repository<TurnHistory>,
+    private readonly locationService: LocationService,
+    private readonly turnHistoryService: TurnHistoryService
   ) {}
 
-  async create(createTurnDto: CreateTurnDto) {
+  async create(user: User, body: any) {
     try {
-      const { locationId, userId, turnNumber } = createTurnDto;
+      const { locationId, turnNumber, status } = body;
 
-      const user = await this.userRepository.findOneBy({ id: userId });
       if (!user)
         throw new NotFoundException("User not found , please create a user");
 
       const location = await this.locationService.findOne(locationId);
+
       if (!location)
         throw new NotFoundException(
           "Location not found , please insert a valid location"
@@ -49,13 +50,12 @@ export class TurnService {
 
       const savedTurn = await this.turnRepository.save(turn);
 
-      const turnHistory = await this.turnHistoryRepository.save({
-        turn: savedTurn,
-        status: "requested",
-        timestamp: new Date(),
+      const turnHistory = await this.turnHistoryService.create({
+        status,
+        changedByUserId: user.id,
       });
 
-      savedTurn.turnHistory = turnHistory;
+      savedTurn.turnHistory = turnHistory!;
 
       const { turnHistory: _, ...turnWithoutHistory } = savedTurn;
 
@@ -114,8 +114,6 @@ export class TurnService {
       ...turnHistory,
       status: "cancelled",
     });
-
-    console.log(updateTurnHistory);
 
     await this.turnHistoryRepository.save(updateTurnHistory!);
 
