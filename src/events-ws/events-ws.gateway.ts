@@ -13,7 +13,6 @@ export class EventsWsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() wss: Server;
-
   constructor(private readonly eventsWsService: EventsWsService) {}
 
   handleConnection(client: Socket) {
